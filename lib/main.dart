@@ -3,7 +3,6 @@ import 'package:designer/ui/SliderDialog.dart';
 import 'package:designer/geom/DesignerShape.dart';
 import 'package:flutter/material.dart';
 import 'package:designer/geom/DesignerPainter.dart';
-import 'package:designer/geom/ShapePoint.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:designer/geom/DesignerData.dart';
 import 'package:designer/io/image.dart';
@@ -202,8 +201,8 @@ class _DesignerState extends State<Designer> {
               setState(() {
                 data.shapes.add(
                     DesignerShape(createPaint(currentColor, currentWidth)));
-                data.shapes.last.add(ShapePoint(
-                    _trans(details.localPosition, _matrix), PointCmd.M));
+                data.shapes.last.add(
+                    _trans(details.localPosition, _matrix));
               });
               break;
             case Mode.pan:
@@ -219,8 +218,8 @@ class _DesignerState extends State<Designer> {
           switch (mode) {
             case Mode.draw:
               setState(() {
-                data.shapes.last.add(ShapePoint(
-                    _trans(details.localPosition, _matrix), PointCmd.L));
+                data.shapes.last.add(
+                    _trans(details.localPosition, _matrix));
               });
               break;
             case Mode.pan:
