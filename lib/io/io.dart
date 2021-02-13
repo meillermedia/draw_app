@@ -10,7 +10,7 @@ Future<File> getFilePath() async {
 void save(Uint8List data) {
   try {
     var fp = FilePickerCross(data,
-        path: "./", type: FileTypeCross.image, fileExtension: "svg");
+        path: "./image", type: FileTypeCross.image, fileExtension: "png");
     fp.exportToStorage().then((value) => print("Write File: $value"));
   } on FileSystemException {
     print("Error while Saving.");
