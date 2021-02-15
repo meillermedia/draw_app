@@ -1,5 +1,5 @@
-import 'dart:ui' as ui;
 import 'package:designer/geom/DesignerShape.dart';
+import 'dart:ui' as ui;
 
 class DesignerData {
   ui.Image image;

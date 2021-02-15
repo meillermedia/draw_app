@@ -1,12 +1,11 @@
 import 'package:designer/ui/ColorPickerDialog.dart';
 import 'package:designer/ui/SliderDialog.dart';
 import 'package:designer/geom/DesignerShape.dart';
-import 'package:flutter/material.dart';
 import 'package:designer/geom/DesignerPainter.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:designer/geom/DesignerData.dart';
+import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:designer/io/image.dart';
-
 void main() => runApp(Painter());
 
 class Painter extends StatelessWidget {

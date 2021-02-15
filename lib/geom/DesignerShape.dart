@@ -1,5 +1,5 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'dart:ui';
 
 Paint createPaint(Color color, double thickness) {
   return Paint()
