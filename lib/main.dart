@@ -196,8 +196,12 @@ class _DesignerState extends State<Designer> {
         child: CustomPaint(
           painter: _designerPainter,
           child: GestureDetector(
-            // Single Touch
+            child: Container(
+              width: size.width,
+              height: size.height,
+            ),
             behavior: HitTestBehavior.translucent,
+             // Single Touch
             onPanDown: (details) {
               switch (mode) {
                 case Mode.draw:
@@ -262,10 +266,6 @@ class _DesignerState extends State<Designer> {
                   break;
               }
             },
-            child: Container(
-              width: size.width,
-              height: size.height,
-            ),
           ),
         ),
       ),
