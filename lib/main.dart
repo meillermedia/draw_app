@@ -21,8 +21,8 @@ class Designer extends StatefulWidget {
   _DesignerState createState() => _DesignerState();
 }
 
-double minScale = 1;
-double maxScale = 4;
+double _minScale = 1;
+double _maxScale = 4;
 
 class _DesignerState extends State<Designer> {
   DesignerData data;
@@ -31,8 +31,9 @@ class _DesignerState extends State<Designer> {
   Color undoButtonColor, redoButtonColor;
   double currentWidth;
   Offset _center;
-  Mode mode = Mode.draw;
+  Mode mode;
   final TransformationController _transContr = TransformationController();
+
   @override
   void initState() {
     data = DesignerData();
@@ -41,6 +42,7 @@ class _DesignerState extends State<Designer> {
     _setUndoButton(false);
     currentWidth = 2;
     _center = Offset.zero;
+    mode = Mode.draw;
     _transContr.value = Matrix4.identity();
     super.initState();
   }
@@ -186,8 +188,8 @@ class _DesignerState extends State<Designer> {
         ],
       ),
       body: InteractiveViewer(
-        minScale: minScale,
-        maxScale: maxScale,
+        minScale: _minScale,
+        maxScale: _maxScale,
         scaleEnabled: mode == Mode.zoom,
         panEnabled: mode == Mode.pan,
         transformationController: _transContr,
@@ -236,8 +238,8 @@ class _DesignerState extends State<Designer> {
                   setState(() {
                     var scale = _transContr.value.getMaxScaleOnAxis();
                     var newScale = scale + val;
-                    if (newScale > scale && newScale < maxScale ||
-                        newScale < scale && newScale > minScale) {
+                    if (newScale > scale && newScale < _maxScale ||
+                        newScale < scale && newScale > _minScale) {
                       var dx = -_center.dx * val;
                       var dy = -_center.dy * val;
                       _transContr.value.translate(dx, dy);
