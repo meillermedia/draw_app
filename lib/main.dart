@@ -4,8 +4,8 @@ import 'package:designer/geom/DesignerShape.dart';
 import 'package:designer/geom/DesignerPainter.dart';
 import 'package:designer/geom/DesignerData.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:designer/io/image.dart';
+
 void main() => runApp(Painter());
 
 class Painter extends StatelessWidget {
@@ -21,19 +21,18 @@ class Designer extends StatefulWidget {
   _DesignerState createState() => _DesignerState();
 }
 
+double minScale = 0.1;
+double maxScale = 2;
+
 class _DesignerState extends State<Designer> {
   DesignerData data;
   DesignerPainter _designerPainter;
   Color currentColor;
   Color undoButtonColor, redoButtonColor;
   double currentWidth;
-
-  Offset _panValue;
   Offset _center;
-  double _scaleValue;
-  Matrix4 _matrix;
   Mode mode = Mode.draw;
-
+  final TransformationController _transContr = TransformationController();
   @override
   void initState() {
     data = DesignerData();
@@ -41,11 +40,8 @@ class _DesignerState extends State<Designer> {
     _setRedoButton(false);
     _setUndoButton(false);
     currentWidth = 2;
-
-    _panValue = Offset.zero;
     _center = Offset.zero;
-    _scaleValue = 1;
-    _matrix = Matrix4.identity();
+    _transContr.value = Matrix4.identity();
     super.initState();
   }
 
@@ -86,10 +82,8 @@ class _DesignerState extends State<Designer> {
           switch (value) {
             case 0:
               setState(() {
-                _panValue = Offset.zero;
                 _center = Offset.zero;
-                _scaleValue = 1;
-                _matrix = Matrix4.identity();
+                _transContr.value = Matrix4.identity();
               });
               break;
             case 1:
@@ -191,81 +185,81 @@ class _DesignerState extends State<Designer> {
               icon: Icon(Icons.file_download), label: "Save Image"),
         ],
       ),
-      body: GestureDetector(
-        // Single Touch
-        behavior: HitTestBehavior.translucent,
-        onPanDown: (details) {
-          switch (mode) {
-            case Mode.draw:
-              setState(() {
-                data.shapes.add(
-                    DesignerShape(createPaint(currentColor, currentWidth)));
-                data.shapes.last.add(
-                    _trans(details.localPosition, _matrix));
-              });
-              break;
-            case Mode.pan:
-              break;
-            case Mode.zoom:
-              setState(() {
-                _center = details.globalPosition;
-              });
-              break;
-          }
-        },
-        onPanUpdate: (details) {
-          switch (mode) {
-            case Mode.draw:
-              setState(() {
-                data.shapes.last.add(
-                    _trans(details.localPosition, _matrix));
-              });
-              break;
-            case Mode.pan:
-              setState(() {
-                var sc = details.delta / _scaleValue;
-                if (sc.distance > 0.2) {
-                  _panValue += sc;
-                  _matrix.translate(sc.dx, sc.dy);
-                }
-              });
-              break;
-            case Mode.zoom:
-              var val = (details.delta.dx + details.delta.dy) /
-                  (_designerPainter.width + _designerPainter.height) *
-                  2;
-              setState(() {
-                _scaleValue += val;
-
-                var dx = -_center.dx * val;
-                var dy = -_center.dy * val;
-
-                print(_center.dx - size.width);
-                _matrix.translate(dx, dy);
-                _matrix.scale(1.0 + val, 1.0 + val);
-              });
-              break;
-          }
-        },
-        onPanEnd: (details) {
-          switch (mode) {
-            case Mode.draw:
-              setState(() => data.redoShapes.clear());
-              _setRedoButton(false);
-              _setUndoButton(true);
-              break;
-            case Mode.pan:
-              break;
-            case Mode.zoom:
-              break;
-          }
-        },
-        child: Transform(
-          transform: _matrix,
-          //origin: Offset(size.width / 2, size.height / 2),
-          //alignment: Alignment.center,
-          child: CustomPaint(
-            painter: _designerPainter,
+      body: InteractiveViewer(
+        minScale: minScale,
+        maxScale: maxScale,
+        scaleEnabled: mode == Mode.zoom,
+        panEnabled: mode == Mode.pan,
+        transformationController: _transContr,
+        child: CustomPaint(
+          painter: _designerPainter,
+          child: GestureDetector(
+            // Single Touch
+            behavior: HitTestBehavior.translucent,
+            onPanDown: (details) {
+              switch (mode) {
+                case Mode.draw:
+                  setState(() {
+                    data.shapes.add(
+                        DesignerShape(createPaint(currentColor, currentWidth)));
+                    data.shapes.last.add(details.localPosition);
+                  });
+                  break;
+                case Mode.pan:
+                  break;
+                case Mode.zoom:
+                  setState(() {
+                    _center = details.globalPosition;
+                  });
+                  break;
+              }
+            },
+            onPanUpdate: (details) {
+              switch (mode) {
+                case Mode.draw:
+                  setState(() {
+                    data.shapes.last.add(details.localPosition);
+                  });
+                  break;
+                case Mode.pan:
+                  setState(() {
+                    var sc = details.delta;
+                    if (sc.distance > 0.2) {
+                      _transContr.value.translate(sc.dx, sc.dy);
+                    }
+                  });
+                  break;
+                case Mode.zoom:
+                  var val = (details.delta.dx + details.delta.dy) /
+                      (_designerPainter.width + _designerPainter.height) *
+                      2;
+                  setState(() {
+                    var scale = _transContr.value.getMaxScaleOnAxis();
+                    var newScale = scale + val;
+                    if (newScale > scale && newScale < maxScale ||
+                        newScale < scale && newScale > 1.0 + minScale) {
+                      var dx = -_center.dx * val;
+                      var dy = -_center.dy * val;
+                      _transContr.value.translate(dx, dy);
+                      _transContr.value.scale(1.0 + val, 1.0 + val);
+                    }
+                  });
+                  break;
+              }
+            },
+            onPanEnd: (details) {
+              switch (mode) {
+                case Mode.draw:
+                  setState(() => data.redoShapes.clear());
+                  _setRedoButton(false);
+                  _setUndoButton(true);
+                  break;
+                case Mode.pan:
+                  break;
+                case Mode.zoom:
+                  break;
+              }
+            },
             child: Container(
               width: size.width,
               height: size.height,
@@ -275,14 +269,6 @@ class _DesignerState extends State<Designer> {
       ),
     );
   }
-}
-
-Offset _trans(Offset p, Matrix4 m) {
-  Vector3 v = Vector3(p.dx, p.dy, 0);
-  Matrix4 m2 = Matrix4.copy(m);
-  m2.invert();
-  Vector3 lp = m2 * v;
-  return Offset(lp.x, lp.y);
 }
 
 Widget buildButton(Icon icon, {double margin = 5, Function onPressed}) {
