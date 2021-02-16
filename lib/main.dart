@@ -273,22 +273,6 @@ class _DesignerState extends State<Designer> {
   }
 }
 
-Widget buildButton(Icon icon, {double margin = 5, Function onPressed}) {
-  return Container(
-    margin: EdgeInsets.all(margin),
-    child: MaterialButton(
-      shape: CircleBorder(),
-      elevation: 0.0,
-      hoverElevation: 0.0,
-      focusElevation: 0.0,
-      highlightElevation: 0.0,
-      color: Colors.blue,
-      onPressed: onPressed,
-      child: icon,
-    ),
-  );
-}
-
 int getSelectedIndex(Mode mode) {
   int i = 3;
   switch (mode) {
