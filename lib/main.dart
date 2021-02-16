@@ -274,7 +274,7 @@ class _DesignerState extends State<Designer> {
 }
 
 int getSelectedIndex(Mode mode) {
-  int i = 3;
+  int i;
   switch (mode) {
     case Mode.pan:
       i = 1;
