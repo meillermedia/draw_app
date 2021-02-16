@@ -21,8 +21,8 @@ class Designer extends StatefulWidget {
   _DesignerState createState() => _DesignerState();
 }
 
-double minScale = 0.1;
-double maxScale = 2;
+double minScale = 1;
+double maxScale = 4;
 
 class _DesignerState extends State<Designer> {
   DesignerData data;
@@ -209,7 +209,7 @@ class _DesignerState extends State<Designer> {
                   break;
                 case Mode.zoom:
                   setState(() {
-                    _center = details.globalPosition;
+                    _center = details.localPosition;
                   });
                   break;
               }
@@ -237,7 +237,7 @@ class _DesignerState extends State<Designer> {
                     var scale = _transContr.value.getMaxScaleOnAxis();
                     var newScale = scale + val;
                     if (newScale > scale && newScale < maxScale ||
-                        newScale < scale && newScale > 1.0 + minScale) {
+                        newScale < scale && newScale > minScale) {
                       var dx = -_center.dx * val;
                       var dy = -_center.dy * val;
                       _transContr.value.translate(dx, dy);
