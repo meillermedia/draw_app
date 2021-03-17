@@ -11,8 +11,8 @@ Paint createPaint(Color color, double thickness) {
 }
 
 class DesignerShape {
-  List<Offset> _points;
-  Paint _paint;
+  late List<Offset> _points;
+  late Paint _paint;
 
   DesignerShape(Paint paint) {
     _points = <Offset>[];

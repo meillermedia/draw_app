@@ -6,7 +6,7 @@ class SliderDialog extends StatefulWidget {
   final Function widthChanged;
   SliderDialog(
       this.widgetSize, this.min, this.max, this.initialSize, this.widthChanged,
-      {Key key})
+      {Key key: const ValueKey(0)})
       : super(key: key);
 
   @override
@@ -14,7 +14,7 @@ class SliderDialog extends StatefulWidget {
 }
 
 class _SliderDialogState extends State<SliderDialog> {
-  double _size;
+  late double _size;
 
   @override
   void initState() {

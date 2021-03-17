@@ -24,8 +24,11 @@ void writeImage(data, width, height) async {
 
   var pic = recorder.endRecording();
   var im = await pic.toImage(width, height);
-  var bytes = await im.toByteData(format: ui.ImageByteFormat.png);
-  var uints =
-      bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.buffer.lengthInBytes);
-  save(uints);
+  im.toByteData(format: ui.ImageByteFormat.png).then((bytes) {
+    if (bytes != null) {
+      var uints = bytes.buffer
+          .asUint8List(bytes.offsetInBytes, bytes.buffer.lengthInBytes);
+      save(uints);
+    }
+  });
 }

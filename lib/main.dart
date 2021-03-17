@@ -25,13 +25,13 @@ double _minScale = 1;
 double _maxScale = 4;
 
 class _DesignerState extends State<Designer> {
-  DesignerData data;
-  DesignerPainter _designerPainter;
-  Color currentColor;
-  Color undoButtonColor, redoButtonColor;
-  double currentWidth;
-  Offset _center;
-  Mode mode;
+  late DesignerData data;
+  late DesignerPainter _designerPainter;
+  late Color currentColor;
+  late Color undoButtonColor, redoButtonColor;
+  late double currentWidth;
+  late Offset _center;
+  late Mode mode;
   final TransformationController _transContr = TransformationController();
 
   @override
