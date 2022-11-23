@@ -4,7 +4,7 @@ import 'package:file_picker_cross/file_picker_cross.dart';
 
 Future<File> getFilePath() async {
   var fp = await FilePickerCross.importFromStorage(type: FileTypeCross.image);
-  return File(fp.path);
+  return File(fp.path ?? '');
 }
 
 void save(Uint8List data) {
