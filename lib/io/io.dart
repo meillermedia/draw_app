@@ -1,18 +1,27 @@
 import 'dart:typed_data';
 import 'dart:io';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 
-Future<File> getFilePath() async {
-  var fp = await FilePickerCross.importFromStorage(type: FileTypeCross.image);
-  return File(fp.path ?? '');
+Future<File?> getFilePath() async {
+  print("Start");
+  var fp = await FilePicker.platform.pickFiles(type: FileType.image);
+  print("End");
+  if (fp != null && fp.paths.length > 0) {
+    var path = fp.paths.first;
+    if (path != null) {
+      return File(path);
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 }
 
-void save(Uint8List data) {
-  try {
-    var fp = FilePickerCross(data,
-        path: "./image", type: FileTypeCross.image, fileExtension: "png");
-    fp.exportToStorage().then((value) => print("Write File: $value"));
-  } on FileSystemException {
-    print("Error while Saving.");
+void save(Uint8List data) async {
+  var fp = await FilePicker.platform.saveFile(type: FileType.image);
+  if (fp != null) {
+    var f = await File(fp);
+    await f.writeAsBytes(data);
   }
 }

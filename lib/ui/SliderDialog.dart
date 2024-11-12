@@ -6,7 +6,7 @@ class SliderDialog extends StatefulWidget {
   final Function widthChanged;
   SliderDialog(
       this.widgetSize, this.min, this.max, this.initialSize, this.widthChanged,
-      {Key key: const ValueKey(0)})
+      {Key key = const ValueKey(0)})
       : super(key: key);
 
   @override

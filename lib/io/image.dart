@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:designer/io/io.dart';
 import 'dart:io';
 
-Future<ui.Image> getImage() async {
-  File f = await getFilePath();
+Future<ui.Image?> getImage() async {
+  File? f = await getFilePath();
+  if (f == null) return null;
   var bytes = await ui.instantiateImageCodec(f.readAsBytesSync());
   var frm = await bytes.getNextFrame();
   return frm.image;

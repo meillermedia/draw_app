@@ -2,7 +2,7 @@
 
 This is the sample code for the book about dart and flutter programming.
 
-You have to allow file access on macos:
+Important: You have to allow file access on macos:
 Change *draw_app/macos/Runner/DebugProfile.entitlements*
 ```
 <key>com.apple.security.app-sandbox</key>
